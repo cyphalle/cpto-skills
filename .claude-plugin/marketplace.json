@@ -19,7 +19,7 @@
     {
       "name": "cpto-skills",
       "source": "./",
-      "description": "Thirteen skills for running product and engineering with agents: spec, gate, open-pr, review-pr, fix-review, worktrees, handoff, spoken briefings, critique, headless jobs, writing doctrine."
+      "description": "Fourteen skills for running product and engineering with agents: spec, gate, open-pr, review-pr, fix-review, worktrees, handoff, parking, spoken briefings, critique, headless jobs, writing doctrine."
     }
   ]
 }
