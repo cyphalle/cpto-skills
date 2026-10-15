@@ -25,11 +25,26 @@ scheduled job, while your main machine stays free.
 
 ## Pair it with a guardrail
 
-A headless job has no human in front of it. Set an environment variable in the plist,
-for example `SCHEDULED_JOB=<slug>`. A PreToolUse hook reads it and allows only the
-irreversible actions listed for that slug in an allowlist, fail-closed: a slug missing
-from the allowlist is a deny. An interactive session cannot forge the variable, because
-its shell mutates a subshell. The environment of the `claude` process stays as launched.
+A headless job has no human in front of it. Set the environment variable
+`CLAUDE_GUARD_SCHEDULED_JOB=<slug>` in the plist, the name the
+[`agent-guardrails`](https://github.com/cyphalle/agent-guardrails) hooks read. A PreToolUse
+hook reads it and allows only the irreversible actions listed for that slug in an
+allowlist, fail-closed: a slug missing from the allowlist is a deny.
+
+The variable is a label, not a proof. Any session can launch a child process with it set,
+so a hook must not trust it alone. `agent-guardrails` ignores it when a `claude` process is
+an ancestor of the one that carries it, which is the case of a session that launches
+another `claude` itself. A hook of your own must make the same check.
+
+## Permissions
+
+The plist below runs the job with the permission rules of your settings. Nobody can answer
+a prompt, so any tool call those rules do not allow is refused. Allow the exact tools the
+job needs, in `permissions.allow` of the job's settings or with `--allowedTools`.
+
+`--dangerously-skip-permissions` is opt-in. It lets the job run any tool call, including
+one requested by content the job reads: an email, an issue, a web page. Add it only for a
+job whose inputs you control, and only with a PreToolUse guardrail installed.
 
 ## Create
 
@@ -61,7 +76,10 @@ its shell mutates a subshell. The environment of the `claude` process stays as l
     <key>ProgramArguments</key>
     <array>
         <string>/ABSOLUTE/PATH/TO/claude</string>
+        <!-- Opt-in, see "Permissions": the job then runs any tool call, including one
+             requested by content it reads. Only with a PreToolUse guardrail installed.
         <string>--dangerously-skip-permissions</string>
+        -->
         <string>-p</string>
         <string>JOB</string>
     </array>
@@ -70,7 +88,7 @@ its shell mutates a subshell. The environment of the `claude` process stays as l
     <dict>
         <key>HOME</key><string>/Users/YOU</string>
         <key>PATH</key><string>/Users/YOU/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
-        <key>SCHEDULED_JOB</key><string>SLUG</string>
+        <key>CLAUDE_GUARD_SCHEDULED_JOB</key><string>SLUG</string>
     </dict>
     <key>StartCalendarInterval</key>
     <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
@@ -82,7 +100,9 @@ its shell mutates a subshell. The environment of the `claude` process stays as l
 ```
 
 4. **Dry run, then confirm.** Show the path, the XML, and a plain summary: "Runs `<job>`
-   <schedule> in `<cwd>`. Logs in `<log>`." Write nothing before an explicit yes.
+   <schedule> in `<cwd>`. Logs in `<log>`." Write nothing before an explicit yes. Add
+   `--dangerously-skip-permissions` only when the user asks for it, and repeat its risk in
+   the summary.
 5. **Write and load.**
 
 ```bash
@@ -100,7 +120,8 @@ launchctl print gui/$(id -u)/com.YOU.claude.SLUG | grep -E "state|program"
 Read every `com.YOU.claude.*.plist`. Three shapes of `ProgramArguments` exist, and looking
 for `-p` on all of them shows an empty job for two:
 
-- `[claude, --dangerously-skip-permissions, -p, "<prompt>"]`: the job is the `-p` value.
+- `[claude, -p, "<prompt>"]`, with or without `--dangerously-skip-permissions`: the job is
+  the `-p` value. Flag the jobs that carry it in the table.
 - `[run-job.sh, <slug>, "<prompt>"]`: the job is the third argument.
 - `[<script>.sh]`: the job is the script. A bash trigger can decide on its own whether
   there is anything to do before it spends a `claude` run.
@@ -109,7 +130,7 @@ Show a table: slug, job, schedule, cwd, loaded state, log.
 
 ## Remove
 
-Bootout, delete the plist, confirm. Keep the log.
+Ask first, then bootout and delete the plist. Keep the log.
 
 ## Pitfalls
 
@@ -119,3 +140,10 @@ Bootout, delete the plist, confirm. Keep the log.
   looks green.
 - A job that posts somewhere must post a verdict in its first line. A parent message that
   only says "exit 0, 18 min" buries good content where nobody reads it.
+
+## Side effects
+
+- Create writes and loads a plist only after an explicit yes. Remove deletes one only after
+  an explicit yes.
+- Once loaded, the job runs on its schedule with nobody in front of it, with your secrets,
+  and posts or writes whatever its prompt tells it to.
