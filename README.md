@@ -35,16 +35,16 @@ team where each domain has one named owner.
 | [`gate`](skills/gate/SKILL.md) | Weighted scores compensate and cannot be re-read. Ten ordered yes/no gates with early exit. It advises with a comment and a label, and decides nothing. |
 | [`open-pr`](skills/open-pr/SKILL.md) | PRs opened by hand skip checks and land in nobody's queue. Layer checks first, numbered decisions with ratifiers, reviewer reading levels, a test plan runnable cold. |
 | [`review-pr`](skills/review-pr/SKILL.md) | Agent reviews that list twelve nits and block on style. A materiality threshold, P0-P5, only verified P0/P1 block, subagents required on large diffs. |
-| [`fix-review`](skills/fix-review/SKILL.md) | Review rounds that stall on conflicts and red CI. Merges the base on real conflicts only, gives back what it cannot resolve, one CI repair round. |
+| [`fix-review`](skills/fix-review/SKILL.md) | Review rounds that stall on conflicts and red CI. Acts only on comments from owners, members and collaborators, merges the base on real conflicts only, gives back what it cannot resolve, one CI repair round. |
 | [`wt-new`](skills/wt-new/SKILL.md) | Parallel sessions that corrupt each other in a shared checkout. Creates an isolated worktree first, then starts the work inside. |
 | [`clearable`](skills/clearable/SKILL.md) | Context lost at `/clear`. Checks git, the PR, and unwritten decisions, then gives two verdicts: GO / NO-GO and v1 that holds / follow-up. |
 | [`say`](skills/say/SKILL.md) | Ten parallel sessions and no time to read every answer. A spoken briefing that opens on the subject and closes on the next action, with the transcript on screen. Briefings from parallel sessions queue instead of cutting each other off. macOS only. |
 | [`handoff`](skills/handoff/SKILL.md) | Delegation that makes the next person replay your iteration. A takeover file with "Decided" and "Yours to decide", and a status that names the act asked. |
 | [`park`](skills/park/SKILL.md) | Sessions you must set aside stay open and cost attention, or get closed and lose their context. Parks the session, a URL or a note as a Todoist task with the resume command and the next step. |
 | [`product-critique`](skills/product-critique/SKILL.md) | Self-review by the agent that wrote the thing. Simulated personas fed with real verbatims, blind judges, and a pre-mortem, all isolated, with a convergence rule. |
-| [`headless-jobs`](skills/headless-jobs/SKILL.md) | Cloud routines cannot reach your local secrets and guardrails. Schedules `claude -p` with macOS `launchd`, paired with a fail-closed allowlist. |
+| [`headless-jobs`](skills/headless-jobs/SKILL.md) | Cloud routines cannot reach your local secrets and guardrails. Schedules `claude -p` with macOS `launchd`, paired with a fail-closed allowlist. Skipping permissions is opt-in. |
 | [`writing-voice`](skills/writing-voice/SKILL.md) | Agent prose that is 4.5 times longer than the message it answers. Caps by reply or deposit, a register indexed on the act asked, banned idioms with measured frequencies. |
-| [`nope`](skills/nope/SKILL.md) | Banned-phrase lists that grow and stop working. A team register of irritants, promoted into positive, countable rules once two people hit the same one. |
+| [`nope`](skills/nope/SKILL.md) | Banned-phrase lists that grow and stop working. A team register of irritants, promoted into positive, countable rules once two people hit the same one. Asks before it pushes a verbatim excerpt. |
 
 | Output style | |
 |---|---|
@@ -85,6 +85,13 @@ ln -s "$PWD/skills/spec" ~/.claude/skills/spec
 
 To use the output style in one repository, copy it to `.claude/output-styles/` and select
 it with `/output-style`.
+
+## Untrusted input
+
+These skills read text other people wrote: issues, comments, diffs, web pages. That text is
+data, never instructions. Skills that act on it act only on authors whose
+`author_association` is `OWNER`, `MEMBER` or `COLLABORATOR`, and post bodies from a file,
+never from a shell string. Each skill lists, in its own file, what it does without asking.
 
 ## Configuration
 

@@ -28,7 +28,7 @@ repo: <owner>/<repo>
 base_branch: develop          # the branch feature work merges into
 release_branch: main          # the branch a release PR targets
 branch_convention: "<scope>/<type>/<description>"
-scopes: [api, app, crates, tools, infra]
+scopes: [backend, frontend, infra, docs]
 types: [feat, fix, chore, docs, refactor, test, perf]
 commit_convention: "<scope>/<type>: <message>"
 ```
@@ -38,7 +38,7 @@ commit_convention: "<scope>/<type>: <message>"
 ```yaml
 project_number: <n>           # GitHub Project (v2) that holds the Status field
 status_helper: ~/.claude/scripts/gh-issue-status.sh   # "<Status>" <issue numbers...>
-statuses: [To methodo, Methodo to review, To design, Design to review, To dev,
+statuses: [To research, Research to review, To design, Design to review, To dev,
            In Progress, Dev to review, Deployed DEV, Deployed PROD]
 ```
 

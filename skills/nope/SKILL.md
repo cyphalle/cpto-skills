@@ -32,8 +32,12 @@ repository). The register exists to feed rules of that kind.
    common case. Add one more `reported by` line to the existing entry, even when the
    reporter is already listed: the count of those lines decides promotion, so splitting an
    entry in two hides the signal.
-3. **Write the entry**, then commit and push to a long-lived shared branch (for example
-   `tools/chore/irritants`).
+3. **Show the entry and ask before you push it.** The `example` field is verbatim text from
+   your conversation, and the branch is shared with the whole team. It can carry a customer
+   name, a figure, a path or a secret. Show the entry, offer to trim it, and push only on an
+   explicit yes. On a no, keep the entry local and say so.
+4. **Write the entry**, then commit and push to a long-lived shared branch (for example
+   `chore/irritants`).
 
    **Write from a dedicated worktree.** `/nope` fires mid-session,
    so the current branch almost always carries work in progress. Checking a shared branch
@@ -41,10 +45,10 @@ repository). The register exists to feed rules of that kind.
 
    ```bash
    REPO=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
-   WT="${REPO}-worktrees/tools-chore-irritants"
+   WT="${REPO}-worktrees/chore-irritants"
    git -C "$REPO" fetch origin --prune
-   [ -d "$WT" ] || git -C "$REPO" worktree add "$WT" tools/chore/irritants 2>/dev/null \
-     || git -C "$REPO" worktree add -b tools/chore/irritants "$WT" origin/<base>
+   [ -d "$WT" ] || git -C "$REPO" worktree add "$WT" chore/irritants 2>/dev/null \
+     || git -C "$REPO" worktree add -b chore/irritants "$WT" origin/<base>
    git -C "$WT" pull --ff-only
    ```
 
@@ -52,7 +56,7 @@ repository). The register exists to feed rules of that kind.
    `$WT/.agents/irritants.md`. If the push is rejected, pull with rebase, re-read the
    register, fold your entry into one that arrived if it is the same pattern, and push
    again. Never force-push this branch: you would drop somebody else's irritant.
-4. **Say whether the threshold is reached**, and stop. Promoting is a separate act.
+5. **Say whether the threshold is reached**, and stop. Promoting is a separate act.
 
 ```markdown
 ### <pattern name>
@@ -136,3 +140,9 @@ filling with personal taste.
 Twenty active entries at most. Past that, the register has stopped being a queue. Promote
 what is ready, and drop what one person reported once and nobody hit again. An irritant
 that never recurs was a bad day.
+
+## Side effects
+
+- Creates or reuses a worktree on the shared `chore/irritants` branch.
+- Commits and pushes the register entry, after your explicit yes in step 3.
+- `--list` writes nothing.
