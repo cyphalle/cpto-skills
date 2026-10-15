@@ -38,6 +38,7 @@ team where each domain has one named owner.
 | [`fix-review`](skills/fix-review/SKILL.md) | Review rounds that stall on conflicts and red CI. Merges the base on real conflicts only, gives back what it cannot resolve, one CI repair round. |
 | [`wt-new`](skills/wt-new/SKILL.md) | Parallel sessions that corrupt each other in a shared checkout. Creates an isolated worktree first, then starts the work inside. |
 | [`clearable`](skills/clearable/SKILL.md) | Context lost at `/clear`. Checks git, the PR, and unwritten decisions, then gives two verdicts: GO / NO-GO and v1 that holds / follow-up. |
+| [`say`](skills/say/SKILL.md) | Ten parallel sessions and no time to read every answer. A spoken briefing that opens on the subject and closes on the next action, with the transcript on screen. Briefings from parallel sessions queue instead of cutting each other off. macOS only. |
 | [`handoff`](skills/handoff/SKILL.md) | Delegation that makes the next person replay your iteration. A takeover file with "Decided" and "Yours to decide", and a status that names the act asked. |
 | [`product-critique`](skills/product-critique/SKILL.md) | Self-review by the agent that wrote the thing. Simulated personas fed with real verbatims, blind judges, and a pre-mortem, all isolated, with a convergence rule. |
 | [`headless-jobs`](skills/headless-jobs/SKILL.md) | Cloud routines cannot reach your local secrets and guardrails. Schedules `claude -p` with macOS `launchd`, paired with a fail-closed allowlist. |
