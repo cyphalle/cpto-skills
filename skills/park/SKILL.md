@@ -116,7 +116,8 @@ pages.
 ```
 
 ```bash
-curl -s -o /tmp/park-response.json -w '%{http_code}' \
+RESP=$(mktemp)
+curl -s -o "$RESP" -w '%{http_code}' \
   https://api.todoist.com/api/v1/tasks \
   -H "Authorization: Bearer $TODOIST_API_TOKEN" \
   -H "Content-Type: application/json" \

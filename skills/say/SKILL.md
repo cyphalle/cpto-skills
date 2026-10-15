@@ -43,7 +43,7 @@ With a link: fetch it **before** writing, with the matching tool.
 
 | Link | Fetch with |
 |---|---|
-| Slack thread | the Slack connector, if one is attached. Rebuild the timestamp from the `p…` path segment: drop the `p` and insert a dot six digits from the end (`p1785318960376619` → `1785318960.376619`). If the URL carries a parent thread parameter, read that one. |
+| Slack thread | the Slack connector, if one is attached. Rebuild the timestamp from the `p…` path segment: drop the `p` and insert a dot six digits from the end (`p1700000000123456` → `1700000000.123456`). If the URL carries a parent thread parameter, read that one. |
 | Notion page | the Notion connector |
 | GitHub issue, PR, commit | `gh` |
 | YouTube | the video transcript |
@@ -120,7 +120,8 @@ The text never passes through the shell. That matters on `/say <link>`: the brie
 built from external content, and a line crafted to close a heredoc would run as a command.
 
 `--label` only feeds `/say queue`, so the listener knows which work each waiting briefing
-comes from. On a link, prefer a readable label (`--label "Slack cloud credits"`).
+comes from. Write it yourself, never copy it from fetched content, keep it to letters,
+digits, spaces and hyphens, and pass it in single quotes (`--label 'Slack cloud credits'`).
 
 ## Step 4: confirm and show the transcript
 
