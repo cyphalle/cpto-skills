@@ -124,6 +124,12 @@ at the same time block each other or return phantom errors. Isolate any run that
 in a sibling folder: `CARGO_TARGET_DIR="$WT-target"`. Sibling, because `.gitignore` covers
 `target/` only.
 
+Never `git stash` in a worktree. The stash stack lives in the common git directory, so it
+is shared by every worktree of the clone: a stash made in one session shows up in all the
+others, and a `git stash pop` there restores it on a branch where it means nothing, then
+removes it from the stack of the session that made it. To set work aside, commit it on the
+worktree's own branch (`git commit -m "wip"`) and amend or squash later.
+
 ### 4c. Assert you are in the worktree
 
 ```bash
