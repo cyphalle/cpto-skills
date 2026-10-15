@@ -330,7 +330,9 @@ kill_current() {
   sp=$(cat "$LOCK/saypid" 2>/dev/null)
   # Only the process this queue started. Never `pkill -x say`: it would kill every `say`
   # on the machine, including processes this queue does not own.
-  [ -n "$sp" ] && kill "$sp" 2>/dev/null
+  # Check the PID still belongs to `say`: after a hard crash of the reader, the number may
+  # have been reused by an unrelated process.
+  [ -n "$sp" ] && [ "$(ps -o comm= -p "$sp" 2>/dev/null)" = "/usr/bin/say" ] && kill "$sp" 2>/dev/null
 }
 
 purge_pending() { find "$Q" -maxdepth 1 -type f -name '*.say' -delete 2>/dev/null; }
